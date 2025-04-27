@@ -20,11 +20,27 @@ class UsinaService(
         return repository.findTop5ByOrderByPotenciaOutorgadaKwDesc()
     }
 
-
     @Transactional
     fun importFromCsv(csvUrl: URL) {
-        log.info("Iniciando importação de usinas do CSV: $csvUrl")
+        log.info("Iniciando importação de usinas de CSV com a URL: $csvUrl")
+        log.info("Deletando todas as usinas existentes...")
+        repository.deleteAll()
+        log.info("Todas as usinas deletadas com sucesso!")
 
+        log.info("Importando CSV...")
+        try {
+            val startTime = System.currentTimeMillis()
+            val registros = importUsinasFromCsv(csvUrl)
+            log.info("Duração da importação: ${(System.currentTimeMillis() - startTime )/ 1000} seconds")
+            log.info("Total de usinas importadas: $registros")
+        } catch (e: Exception) {
+            log.error("Erro ao importar CSV: ${e.message}")
+            throw e
+        }
+        log.info("Importação concluída com sucesso!")
+    }
+
+    private fun importUsinasFromCsv(csvUrl: URL): Int {
         val batchSize = 1000
         var counter = 0
 
@@ -54,6 +70,6 @@ class UsinaService(
         }
         entityManager.flush()
         entityManager.clear()
-        log.info("Importação de usinas concluída. Total de usinas importadas: $counter")
+        return counter
     }
 }
