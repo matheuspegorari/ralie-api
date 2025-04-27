@@ -3,9 +3,11 @@ package dev.pegorari.boltenergy.ralieapi.service
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import dev.pegorari.boltenergy.ralieapi.model.Usina
 import dev.pegorari.boltenergy.ralieapi.repository.UsinaRepository
+import dev.pegorari.boltenergy.ralieapi.schemas.UsinaCsvColumns
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.net.URL
 
@@ -15,6 +17,8 @@ class UsinaService(
     private val entityManager: EntityManager
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
+    @Value("\${usina.import.batchSize}")
+    private val batchSize: Int = 1000
 
     fun getTopUsinas(): List<Usina> {
         return repository.findTop5ByOrderByPotenciaOutorgadaKwDesc()
@@ -41,26 +45,14 @@ class UsinaService(
     }
 
     private fun importUsinasFromCsv(csvUrl: URL): Int {
-        val batchSize = 1000
         var counter = 0
 
         val inputStream = csvUrl.openStream()
         csvReader().open(inputStream) {
             readAllWithHeaderAsSequence().forEach { row ->
-                val potenciaStr = row["MdaPotenciaOutorgadaKw"] ?: "0.0"
-                val potenciaFormatada = potenciaStr.trim().replace(",", ".")
-                val potencia = potenciaFormatada.toDoubleOrNull() ?: 0.0
-
-                val usina = Usina(
-                    codCEG = row["CodCEG"] ?: "",
-                    nomeEmpreendimento = row["NomEmpreendimento"] ?: "",
-                    potenciaOutorgadaKw = potencia,
-                    uf = row["SigUFPrincipal"] ?: "",
-                    tipoGeracao = row["SigTipoGeracao"] ?: "",
-                    origemCombustivel = row["DscOrigemCombustivel"] ?: "",
-                    situacaoObra = row["DscSituacaoObra"] ?: ""
-                )
+                val usina = fromCsvRow(row)
                 repository.save(usina)
+
                 if (++counter % batchSize == 0) {
                     entityManager.flush()
                     entityManager.clear()
@@ -71,5 +63,21 @@ class UsinaService(
         entityManager.flush()
         entityManager.clear()
         return counter
+    }
+
+    private fun fromCsvRow(row: Map<String, String>): Usina {
+        val potenciaStr = row[UsinaCsvColumns.POTENCIA_OUTORGADA.columnName] ?: "0.0"
+        val potenciaFormatada = potenciaStr.trim().replace(",", ".")
+        val potencia = potenciaFormatada.toDoubleOrNull() ?: 0.0
+
+        return Usina(
+            codCEG = row[UsinaCsvColumns.COD_CEG.columnName] ?: "",
+            nomeEmpreendimento = row[UsinaCsvColumns.NOME_EMPREENDIMENTO.columnName] ?: "",
+            potenciaOutorgadaKw = potencia,
+            uf = row[UsinaCsvColumns.UF_PRINCIPAL.columnName] ?: "",
+            tipoGeracao = row[UsinaCsvColumns.TIPO_GERACAO.columnName] ?: "",
+            origemCombustivel = row[UsinaCsvColumns.ORIGEM_COMBUSTIVEL.columnName] ?: "",
+            situacaoObra = row[UsinaCsvColumns.SITUACAO_OBRA.columnName] ?: ""
+        )
     }
 }
