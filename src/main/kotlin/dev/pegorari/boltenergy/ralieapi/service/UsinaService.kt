@@ -14,8 +14,12 @@ class UsinaService(
     private val repository: UsinaRepository,
     private val entityManager: EntityManager
 ) {
-
     private val log = LoggerFactory.getLogger(javaClass)
+
+    fun getTopUsinas(): List<Usina> {
+        return repository.findTop5ByOrderByPotenciaOutorgadaKwDesc()
+    }
+
 
     @Transactional
     fun importFromCsv(csvUrl: URL) {
@@ -27,10 +31,14 @@ class UsinaService(
         val inputStream = csvUrl.openStream()
         csvReader().open(inputStream) {
             readAllWithHeaderAsSequence().forEach { row ->
+                val potenciaStr = row["MdaPotenciaOutorgadaKw"] ?: "0.0"
+                val potenciaFormatada = potenciaStr.trim().replace(",", ".")
+                val potencia = potenciaFormatada.toDoubleOrNull() ?: 0.0
+
                 val usina = Usina(
                     codCEG = row["CodCEG"] ?: "",
                     nomeEmpreendimento = row["NomEmpreendimento"] ?: "",
-                    potenciaOutorgadaKw = row["MdaPotenciaOutorgadaKw"]?.toDoubleOrNull() ?: 0.0,
+                    potenciaOutorgadaKw = potencia,
                     uf = row["SigUFPrincipal"] ?: "",
                     tipoGeracao = row["SigTipoGeracao"] ?: "",
                     origemCombustivel = row["DscOrigemCombustivel"] ?: "",
