@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: raliedb
     ports:
-      - "5432:5432"
+      - "${POSTGRES_HOST_PORT:-5432}:5432"  # Dynamic or default 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -24,7 +24,7 @@ services:
       USINA_CSV_URL: "https://dadosabertos.aneel.gov.br/datastore/dump/4a615df8-4c25-48fa-bbea-873a36a79518?bom=True"
       USINA_EXEC_STARTUP: "1"
     ports:
-      - "8080:8080"
+      - "${APP_HOST_PORT:-8080}:8080"  # Dynamic or default 8080
 
 volumes:
   postgres_data:

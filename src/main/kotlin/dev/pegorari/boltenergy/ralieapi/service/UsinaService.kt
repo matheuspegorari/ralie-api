@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.awt.print.Pageable
 import java.net.URL
 
 @Service
@@ -21,7 +22,7 @@ class UsinaService(
     private val batchSize: Int = 1000
 
     fun getTopUsinas(): List<Usina> {
-        return repository.findTop5ByOrderByPotenciaOutorgadaKwDesc()
+        return repository.findTop5DistinctUsinasByCodCEG()
     }
 
     @Transactional
