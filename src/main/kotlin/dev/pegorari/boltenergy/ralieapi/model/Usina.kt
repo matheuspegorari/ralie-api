@@ -8,6 +8,9 @@ import java.time.LocalDate
 @Table(name = "usina")
 data class Usina(
     @Id
+    @Column(name = "id")
+    val id: Int,
+
     @Column(name = "cod_ceg")
     val codCEG: String,
 

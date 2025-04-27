@@ -1,6 +1,7 @@
 package dev.pegorari.boltenergy.ralieapi.schemas
 
 enum class UsinaCsvColumns(val columnName: String) {
+    ID("_id"),
     COD_CEG("CodCEG"),
     NOME_EMPREENDIMENTO("NomEmpreendimento"),
     POTENCIA_OUTORGADA("MdaPotenciaOutorgadaKw"),

@@ -28,7 +28,7 @@ class UsinaService(
     fun importFromCsv(csvUrl: URL) {
         log.info("Iniciando importação de usinas de CSV com a URL: $csvUrl")
         log.info("Deletando todas as usinas existentes...")
-        repository.deleteAll()
+        repository.deleteAllInBatch()
         log.info("Todas as usinas deletadas com sucesso!")
 
         log.info("Importando CSV...")
@@ -51,7 +51,7 @@ class UsinaService(
         csvReader().open(inputStream) {
             readAllWithHeaderAsSequence().forEach { row ->
                 val usina = fromCsvRow(row)
-                repository.save(usina)
+                entityManager.persist(usina)
 
                 if (++counter % batchSize == 0) {
                     entityManager.flush()
@@ -71,6 +71,7 @@ class UsinaService(
         val potencia = potenciaFormatada.toDoubleOrNull() ?: 0.0
 
         return Usina(
+            id = row[UsinaCsvColumns.ID.columnName]?.toInt() ?: 0,
             codCEG = row[UsinaCsvColumns.COD_CEG.columnName] ?: "",
             nomeEmpreendimento = row[UsinaCsvColumns.NOME_EMPREENDIMENTO.columnName] ?: "",
             potenciaOutorgadaKw = potencia,
