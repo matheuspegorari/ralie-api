@@ -12,5 +12,19 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  app:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/raliedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      USINA_IMPORT_CRON: "0 0 1 * * *"
+      USINA_CSV_URL: "https://dadosabertos.aneel.gov.br/datastore/dump/4a615df8-4c25-48fa-bbea-873a36a79518?bom=True"
+      USINA_EXEC_STARTUP: "1"
+    ports:
+      - "8080:8080"
+
 volumes:
   postgres_data:
