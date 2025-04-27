@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UsinaRepository : JpaRepository<Usina, String> {
-    fun findTop5ByOrderByPotenciaOutorgadaKw(): List<Usina>
+    fun findTop5ByOrderByPotenciaOutorgadaKwDesc(): List<Usina>
 }
