@@ -1,4 +1,4 @@
-package dev.pegorari.boltenergy.ralieapi.model
+package dev.pegorari.ralieapi.model
 
 import jakarta.persistence.*
 import java.math.BigDecimal

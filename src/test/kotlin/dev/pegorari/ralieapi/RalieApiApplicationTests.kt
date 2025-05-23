@@ -1,4 +1,4 @@
-package dev.pegorari.boltenergy.ralieapi
+package dev.pegorari.ralieapi
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -10,4 +10,4 @@ class RalieApiApplicationTests {
     fun contextLoads() {
     }
 
-}
+} 

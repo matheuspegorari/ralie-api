@@ -1,6 +1,6 @@
-package dev.pegorari.boltenergy.ralieapi.service
+package dev.pegorari.ralieapi.service
 
-import dev.pegorari.boltenergy.ralieapi.repository.UsinaRepository
+import dev.pegorari.ralieapi.repository.UsinaRepository
 import org.springframework.stereotype.Service
 
 @Service

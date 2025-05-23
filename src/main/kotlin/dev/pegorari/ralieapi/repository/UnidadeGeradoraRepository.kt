@@ -1,6 +1,6 @@
-package dev.pegorari.boltenergy.ralieapi.repository
+package dev.pegorari.ralieapi.repository
 
-import dev.pegorari.boltenergy.ralieapi.model.UnidadeGeradora
+import dev.pegorari.ralieapi.model.UnidadeGeradora
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

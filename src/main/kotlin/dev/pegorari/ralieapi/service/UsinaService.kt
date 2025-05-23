@@ -1,15 +1,14 @@
-package dev.pegorari.boltenergy.ralieapi.service
+package dev.pegorari.ralieapi.service
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import dev.pegorari.boltenergy.ralieapi.model.Usina
-import dev.pegorari.boltenergy.ralieapi.repository.UsinaRepository
-import dev.pegorari.boltenergy.ralieapi.schemas.UsinaCsvColumns
+import dev.pegorari.ralieapi.model.Usina
+import dev.pegorari.ralieapi.repository.UsinaRepository
+import dev.pegorari.ralieapi.schemas.UsinaCsvColumns
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.awt.print.Pageable
 import java.net.URL
 
 @Service
@@ -18,6 +17,7 @@ class UsinaService(
     private val entityManager: EntityManager
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
+
     @Value("\${usina.import.batchSize}")
     private val batchSize: Int = 1000
 
@@ -36,7 +36,7 @@ class UsinaService(
         try {
             val startTime = System.currentTimeMillis()
             val registros = importUsinasFromCsv(csvUrl)
-            log.info("Duração da importação: ${(System.currentTimeMillis() - startTime )/ 1000} seconds")
+            log.info("Duração da importação: ${(System.currentTimeMillis() - startTime) / 1000} seconds")
             log.info("Total de usinas importadas: $registros")
         } catch (e: Exception) {
             log.error("Erro ao importar CSV: ${e.message}")

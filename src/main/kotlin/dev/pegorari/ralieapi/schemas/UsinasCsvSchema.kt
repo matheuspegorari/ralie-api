@@ -1,4 +1,4 @@
-package dev.pegorari.boltenergy.ralieapi.schemas
+package dev.pegorari.ralieapi.schemas
 
 enum class UsinaCsvColumns(val columnName: String) {
     ID("_id"),

@@ -1,4 +1,4 @@
-package dev.pegorari.boltenergy.ralieapi.config
+package dev.pegorari.ralieapi.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
