@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UsinaRepository : JpaRepository<Usina, String> {
+interface UsinaRepository : JpaRepository<Usina, Int> {
     @Query(value = """
         WITH top_plants AS (
             SELECT DISTINCT ON (cod_ceg) *
